@@ -5,7 +5,6 @@ import com.example.todolist.exceptions.handlers.AuthorizationExceptionHandler;
 import com.example.todolist.users.service.UserDetailsServiceImpl;
 import com.example.todolist.utils.JwtUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +29,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 @AllArgsConstructor
 public class WebSecurityConfig {
+
+    private static final String DOCS_URL = "/docs**";
+
+    private static final String DOCS_API_URL = "/docs/**";
+
+    private static final String SWAGGER_URL = "/swagger-ui/**";
 
     private static final String BASE_URL = "/api";
 
@@ -90,12 +95,14 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                            .requestMatchers(AUTH_URL)
-                            .permitAll()
-                            .requestMatchers(TODO_LISTS_URL)
-                            .hasAuthority(UserRole.USER.name())
-                            .requestMatchers(REPORTING_URL, ROLES_URL)
-                            .hasAuthority(UserRole.MAINTAINER.name())
+                        .requestMatchers(DOCS_URL, DOCS_API_URL, SWAGGER_URL)
+                        .permitAll()
+                        .requestMatchers(AUTH_URL)
+                        .permitAll()
+                        .requestMatchers(TODO_LISTS_URL)
+                        .hasAuthority(UserRole.USER.name())
+                        .requestMatchers(REPORTING_URL, ROLES_URL)
+                        .hasAuthority(UserRole.MAINTAINER.name())
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
