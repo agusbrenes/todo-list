@@ -2,9 +2,11 @@ package com.example.todolist.roles.service;
 
 import com.example.todolist.exceptions.types.RoleNotFoundException;
 import com.example.todolist.roles.dto.RoleDto;
+import com.example.todolist.roles.dto.RoleInfoDto;
 import com.example.todolist.roles.entity.Role;
 import com.example.todolist.roles.mapper.RoleMapper;
 import com.example.todolist.roles.repository.RoleRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,18 +45,18 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.convertNEntitiesToDto(roleRepository.findAll());
     }
 
-    public RoleDto createRole(RoleDto roleDto) {
-        log.info("Creating a new Role with name: '{}'", roleDto.getName());
-        Role role = roleMapper.convertToEntity(roleDto);
+    public RoleDto createRole(RoleInfoDto roleInfoDto) {
+        log.info("Creating a new Role with name: '{}'", roleInfoDto.getName());
+        Role role = roleMapper.convertToEntity(roleInfoDto);
         return roleMapper.convertToDto(roleRepository.save(role));
     }
 
-    public RoleDto updateRole(Integer id, RoleDto roleDto) throws RoleNotFoundException {
+    public RoleDto updateRole(Integer id, RoleInfoDto roleInfoDto) throws RoleNotFoundException {
         log.info("Updating Role with id: '{}'", id);
         Role role = roleRepository
                 .findById(id)
                 .orElseThrow(() -> new RoleNotFoundException(id));
-        role.setName(roleDto.getName());
+        role.setName(roleInfoDto.getName());
         return roleMapper.convertToDto(roleRepository.save(role));
     }
 

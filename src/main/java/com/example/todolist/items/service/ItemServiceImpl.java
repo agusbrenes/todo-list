@@ -3,6 +3,7 @@ package com.example.todolist.items.service;
 import com.example.todolist.enums.Status;
 import com.example.todolist.exceptions.types.ItemNotFoundException;
 import com.example.todolist.items.dto.ItemDto;
+import com.example.todolist.items.dto.ItemInfoDto;
 import com.example.todolist.items.mapper.ItemMapper;
 import com.example.todolist.items.repository.ItemRepository;
 import com.example.todolist.items.entity.Item;
@@ -20,14 +21,14 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemMapper itemMapper;
 
-    public ItemDto createItem(ItemDto itemDto) {
-        log.info("Creating a new Item with description: '{}'", itemDto.getDescription());
-        Item item = itemMapper.convertToEntity(itemDto);
+    public ItemDto createItem(ItemInfoDto itemInfoDto) {
+        log.info("Creating a new Item with description: '{}'", itemInfoDto.getDescription());
+        Item item = itemMapper.convertToEntity(itemInfoDto);
         item.setStatus(Status.PENDING);
         return itemMapper.convertToDto(itemRepository.save(item));
     }
 
-    public ItemDto updateItem(TodoList todoList, Integer itemId, ItemDto itemDto)
+    public ItemDto updateItem(TodoList todoList, Integer itemId, ItemInfoDto itemInfoDto)
             throws ItemNotFoundException {
         log.info("Getting Item with id: '{}' from To-Do List with id: '{}'",
                 itemId,
@@ -40,13 +41,13 @@ public class ItemServiceImpl implements ItemService {
                 todoList.getId());
         log.info("Updating Item with id: '{}', description: '{}' and status: '{}'",
                 itemId,
-                itemDto.getDescription(),
-                itemDto.getStatus());
-        if (itemDto.getDescription() != null) {
-            item.setDescription(itemDto.getDescription());
+                itemInfoDto.getDescription(),
+                itemInfoDto.getStatus());
+        if (itemInfoDto.getDescription() != null) {
+            item.setDescription(itemInfoDto.getDescription());
         }
-        if (itemDto.getStatus() != null) {
-            item.setStatus(itemDto.getStatus());
+        if (itemInfoDto.getStatus() != null) {
+            item.setStatus(itemInfoDto.getStatus());
         }
         return itemMapper.convertToDto(itemRepository.save(item));
     }

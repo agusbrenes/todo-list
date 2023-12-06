@@ -2,6 +2,7 @@ package com.example.todolist.roles.controller;
 
 import com.example.todolist.exceptions.types.RoleNotFoundException;
 import com.example.todolist.roles.dto.RoleDto;
+import com.example.todolist.roles.dto.RoleInfoDto;
 import com.example.todolist.roles.service.RoleService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +34,15 @@ public class RoleController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoleDto> createRole(@Validated @RequestBody RoleDto roleDto) {
-        return new ResponseEntity<>(roleService.createRole(roleDto), HttpStatus.CREATED);
+    public ResponseEntity<RoleDto> createRole(@Validated @RequestBody RoleInfoDto roleInfoDto) {
+        return new ResponseEntity<>(roleService.createRole(roleInfoDto), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoleDto> updateRole(
             @PathVariable("id") Integer id,
-            @Validated @RequestBody RoleDto roleDto) throws RoleNotFoundException {
-        return new ResponseEntity<>(roleService.updateRole(id, roleDto), HttpStatus.OK);
+            @Validated @RequestBody RoleInfoDto roleInfoDto) throws RoleNotFoundException {
+        return new ResponseEntity<>(roleService.updateRole(id, roleInfoDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -1,12 +1,15 @@
 package com.example.todolist.todolists.service;
 
+import com.example.todolist.exceptions.types.ItemNotFoundException;
 import com.example.todolist.exceptions.types.LimitException;
 import com.example.todolist.exceptions.types.TodoListNotFoundException;
 import com.example.todolist.items.dto.ItemDto;
+import com.example.todolist.items.dto.ItemInfoDto;
 import com.example.todolist.items.entity.Item;
 import com.example.todolist.items.mapper.ItemMapper;
 import com.example.todolist.items.service.ItemService;
 import com.example.todolist.todolists.dto.TodoListDto;
+import com.example.todolist.todolists.dto.TodoListInfoDto;
 import com.example.todolist.users.dto.UserDto;
 import com.example.todolist.users.entity.User;
 import com.example.todolist.users.mapper.UserMapper;
@@ -69,14 +72,14 @@ public class TodoListServiceImpl implements TodoListService {
                 .build();
     }
 
-    public TodoListDto createTodoList(UserDto userDto, TodoListDto todoListDto)
+    public TodoListDto createTodoList(UserDto userDto, TodoListInfoDto todoListInfoDto)
             throws LimitException {
-        log.info("Creating a new To-Do List with name: '{}'", todoListDto.getTitle());
+        log.info("Creating a new To-Do List with name: '{}'", todoListInfoDto.getTitle());
         User currentUser = userMapper.convertToEntity(userDto);
         if (todoListRepository.countAllByCreator(currentUser) >= MAX_TODO_LISTS_PER_USER) {
             throw new LimitException("To-Do Lists", "User", MAX_TODO_LISTS_PER_USER);
         }
-        TodoList todoList = todoListMapper.convertToEntity(todoListDto);
+        TodoList todoList = todoListMapper.convertToEntity(todoListInfoDto);
         todoList.setCreator(currentUser);
         todoList.setCreatedAt(LocalDateTime.now());
         todoList.setUpdatedAt(LocalDateTime.now());
@@ -86,13 +89,13 @@ public class TodoListServiceImpl implements TodoListService {
     public TodoListDto updateTodoList(
             UserDto userDto,
             Integer id,
-            TodoListDto todoListDto) throws TodoListNotFoundException {
+            TodoListInfoDto todoListInfoDto) throws TodoListNotFoundException {
         log.info("Updating To-Do List with id: '{}'", id);
         User currentUser = userMapper.convertToEntity(userDto);
         TodoList todoList = todoListRepository
                 .findByCreatorAndId(currentUser, id)
                 .orElseThrow(() -> new TodoListNotFoundException(id));
-        todoList.setTitle(todoListDto.getTitle());
+        todoList.setTitle(todoListInfoDto.getTitle());
         todoList.setUpdatedAt(LocalDateTime.now());
         return todoListMapper.convertToDto(todoListRepository.save(todoList));
     }
@@ -122,7 +125,7 @@ public class TodoListServiceImpl implements TodoListService {
     public ItemDto addTodoListItem(
             UserDto userDto,
             Integer id,
-            ItemDto itemDto) throws TodoListNotFoundException, LimitException {
+            ItemInfoDto itemInfoDto) throws TodoListNotFoundException, LimitException {
         log.info("Adding Item to To-Do List with id: '{}'", id);
         User currentUser = userMapper.convertToEntity(userDto);
         TodoList todoList = todoListRepository
@@ -133,8 +136,8 @@ public class TodoListServiceImpl implements TodoListService {
         }
         log.info("To-Do List with id: '{}' found. Adding Item with description: '{}'",
                 id,
-                itemDto.getDescription());
-        Item item = itemMapper.convertToEntity(itemService.createItem(itemDto));
+                itemInfoDto.getDescription());
+        Item item = itemMapper.convertToEntity(itemService.createItem(itemInfoDto));
         item.setTodoList(todoList);
         todoList.addItem(item);
         todoList.setUpdatedAt(LocalDateTime.now());
@@ -146,20 +149,20 @@ public class TodoListServiceImpl implements TodoListService {
             UserDto userDto,
             Integer todoListId,
             Integer itemId,
-            ItemDto itemDto) throws TodoListNotFoundException {
+            ItemInfoDto itemInfoDto) throws TodoListNotFoundException, ItemNotFoundException {
         log.info("Updating Item with id: '{}', from To-Do List with id: '{}'", itemId, todoListId);
         User currentUser = userMapper.convertToEntity(userDto);
         TodoList todoList = todoListRepository
                 .findByCreatorAndId(currentUser, todoListId)
                 .orElseThrow(() -> new TodoListNotFoundException(todoListId));
         log.info("To-Do List with id: '{}' found", todoListId);
-        return itemService.updateItem(todoList, itemId, itemDto);
+        return itemService.updateItem(todoList, itemId, itemInfoDto);
     }
 
     public void deleteTodoListItem(
             UserDto userDto,
             Integer todoListId,
-            Integer itemId) throws TodoListNotFoundException {
+            Integer itemId) throws TodoListNotFoundException, ItemNotFoundException {
         User currentUser = userMapper.convertToEntity(userDto);
         TodoList todoList = todoListRepository
                 .findByCreatorAndId(currentUser, todoListId)

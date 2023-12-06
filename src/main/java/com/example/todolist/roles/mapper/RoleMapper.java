@@ -1,5 +1,6 @@
 package com.example.todolist.roles.mapper;
 
+import com.example.todolist.roles.dto.RoleInfoDto;
 import com.example.todolist.roles.entity.Role;
 import com.example.todolist.roles.dto.RoleDto;
 import com.example.todolist.utils.Mapper;
@@ -21,6 +22,10 @@ public class RoleMapper extends Mapper<Role, RoleDto> {
     @Override
     public Role convertToEntity(RoleDto roleDto) {
         return modelMapper.map(roleDto, Role.class);
+    }
+
+    public Role convertToEntity(RoleInfoDto roleInfoDto) {
+        return modelMapper.map(roleInfoDto, Role.class);
     }
 
 }

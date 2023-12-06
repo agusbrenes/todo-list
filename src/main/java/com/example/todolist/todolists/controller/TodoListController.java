@@ -3,7 +3,9 @@ package com.example.todolist.todolists.controller;
 import com.example.todolist.auth.service.AuthService;
 import com.example.todolist.exceptions.types.TodoListNotFoundException;
 import com.example.todolist.items.dto.ItemDto;
+import com.example.todolist.items.dto.ItemInfoDto;
 import com.example.todolist.todolists.dto.TodoListDto;
+import com.example.todolist.todolists.dto.TodoListInfoDto;
 import com.example.todolist.users.dto.UserDto;
 import com.example.todolist.utils.response.PageResponse;
 import com.example.todolist.todolists.service.TodoListService;
@@ -48,19 +50,23 @@ public class TodoListController {
 
     @PostMapping
     public ResponseEntity<TodoListDto> createTodoList(
-            @Validated @RequestBody final TodoListDto todoListDto,
+            @Validated @RequestBody final TodoListInfoDto todoListInfoDto,
             final Authentication authentication) {
         UserDto userDto = authService.getCurrentUser(authentication);
-        return new ResponseEntity<>(todoListService.createTodoList(userDto, todoListDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                todoListService.createTodoList(userDto, todoListInfoDto),
+                HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{id}")
     public ResponseEntity<TodoListDto> updateTodoList(
             @PathVariable("id") final Integer id,
-            @Validated @RequestBody final TodoListDto todoListDto,
+            @Validated @RequestBody final TodoListInfoDto todoListInfoDto,
             Authentication authentication) throws TodoListNotFoundException {
         UserDto userDto = authService.getCurrentUser(authentication);
-        return new ResponseEntity<>(todoListService.updateTodoList(userDto, id, todoListDto), HttpStatus.OK);
+        return new ResponseEntity<>(
+                todoListService.updateTodoList(userDto, id, todoListInfoDto),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -85,21 +91,23 @@ public class TodoListController {
     @PostMapping(path = "/{id}/items")
     public ResponseEntity<ItemDto> addTodoListItem(
             @PathVariable("id") final Integer id,
-            @Validated @RequestBody final ItemDto itemDto,
+            @Validated @RequestBody final ItemInfoDto itemInfoDto,
             Authentication authentication) throws TodoListNotFoundException {
         UserDto userDto = authService.getCurrentUser(authentication);
-        return new ResponseEntity<>(todoListService.addTodoListItem(userDto, id, itemDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                todoListService.addTodoListItem(userDto, id, itemInfoDto),
+                HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{todoListId}/items/{itemId}")
     public ResponseEntity<ItemDto> updateTodoListItem(
             @PathVariable("todoListId") Integer todoListId,
             @PathVariable("itemId") Integer itemId,
-            @Validated @RequestBody ItemDto itemDto,
+            @Validated @RequestBody ItemInfoDto itemInfoDto,
             Authentication authentication) throws TodoListNotFoundException {
         UserDto userDto = authService.getCurrentUser(authentication);
         return new ResponseEntity<>(
-                todoListService.updateTodoListItem(userDto, todoListId, itemId, itemDto),
+                todoListService.updateTodoListItem(userDto, todoListId, itemId, itemInfoDto),
                 HttpStatus.OK);
     }
 
