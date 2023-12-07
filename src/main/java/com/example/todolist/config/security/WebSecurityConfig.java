@@ -30,15 +30,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @AllArgsConstructor
 public class WebSecurityConfig {
 
-    private static final String DOCS_URL = "/docs**";
-
-    private static final String DOCS_API_URL = "/docs/**";
-
-    private static final String SWAGGER_URL = "/swagger-ui/**";
+    private static final String PATH_MATCHER = "/**";
 
     private static final String BASE_URL = "/api";
 
-    private static final String PATH_MATCHER = "/**";
+    private static final String DOCS_YAML_URL = "/docs.yaml";
+
+    private static final String DOCS_URL = "/docs" + PATH_MATCHER;
+
+    private static final String SWAGGER_URL = "/swagger-ui" + PATH_MATCHER;
+
+    private static final String ACTUATOR_URL = "/actuator" + PATH_MATCHER;
 
     private static final String AUTH_URL = BASE_URL + "/auth" + PATH_MATCHER;
 
@@ -75,7 +77,8 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+            throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
@@ -95,17 +98,16 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(DOCS_URL, DOCS_API_URL, SWAGGER_URL)
-                        .permitAll()
-                        .requestMatchers(AUTH_URL)
+                        .requestMatchers(AUTH_URL, DOCS_URL, DOCS_YAML_URL, SWAGGER_URL)
                         .permitAll()
                         .requestMatchers(TODO_LISTS_URL)
                         .hasAuthority(UserRole.USER.name())
-                        .requestMatchers(REPORTING_URL, ROLES_URL)
+                        .requestMatchers(REPORTING_URL, ROLES_URL, ACTUATOR_URL)
                         .hasAuthority(UserRole.MAINTAINER.name())
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authenticationJwtTokenFilter(),
+                        UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
