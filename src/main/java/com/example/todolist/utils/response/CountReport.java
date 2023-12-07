@@ -7,6 +7,6 @@ import lombok.Data;
 @Builder
 public class CountReport {
 
-    protected long totalResults;
+    private long totalResults;
 
 }
