@@ -1,14 +1,16 @@
 package com.example.todolist.roles.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
 
 @Data
 @NoArgsConstructor
 public class RoleInfoDto {
 
-    @NonNull
+    @NotNull(message = "Role \"name\" cannot be null")
+    @NotBlank(message = "Role \"name\" cannot be an empty")
     private String name;
 
 }
