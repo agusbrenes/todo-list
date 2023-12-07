@@ -7,8 +7,14 @@ import com.example.todolist.items.dto.ItemInfoDto;
 import com.example.todolist.todolists.dto.TodoListDto;
 import com.example.todolist.todolists.dto.TodoListInfoDto;
 import com.example.todolist.users.dto.UserDto;
+import com.example.todolist.utils.response.ErrorResponseBody;
 import com.example.todolist.utils.response.PageResponse;
 import com.example.todolist.todolists.service.TodoListService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +39,20 @@ public class TodoListController {
     private final AuthService authService;
 
     @GetMapping
+    @Operation(summary = "Get all the User's To-Do Lists paginated and sorted by Date of creation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the User's To-Do Lists",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<PageResponse> getTodoLists(
             @PageableDefault(size = 5) final Pageable paging,
             Authentication authentication) {
@@ -41,6 +61,26 @@ public class TodoListController {
     }
 
     @GetMapping(path = "/{id}")
+    @Operation(summary = "Get a To-Do List by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the specified To-Do List by its id",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "404", description = "To-Do List not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<TodoListDto> getTodoListById(
             @PathVariable("id") final Integer id,
             Authentication authentication) throws TodoListNotFoundException {
@@ -49,6 +89,24 @@ public class TodoListController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new To-Do List")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created the new To-Do List successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid To-Do List payload supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500",
+                    description = "Reached the maximum of To-Do Lists a User can have",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<TodoListDto> createTodoList(
             @Validated @RequestBody final TodoListInfoDto todoListInfoDto,
             final Authentication authentication) {
@@ -59,6 +117,27 @@ public class TodoListController {
     }
 
     @PutMapping(path = "/{id}")
+    @Operation(summary = "Update an existing To-Do List")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Updated the existing To-Do List successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid To-Do List payload supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "404", description = "To-Do List not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<TodoListDto> updateTodoList(
             @PathVariable("id") final Integer id,
             @Validated @RequestBody final TodoListInfoDto todoListInfoDto,
@@ -69,7 +148,28 @@ public class TodoListController {
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path = "/{id}")
+    @Operation(summary = "Delete an existing To-Do List")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Deleted the existing To-Do List successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "404", description = "To-Do List not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<Boolean> deleteTodoList(
             @PathVariable("id") final Integer id,
             Authentication authentication) throws TodoListNotFoundException {
@@ -81,6 +181,23 @@ public class TodoListController {
     /* To-Do Items */
 
     @GetMapping(path = "/{id}/items")
+    @Operation(summary = "Get all Items from a To-Do List")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the To-Do List Items",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<List<ItemDto>> getTodoListItems(
             @PathVariable("id") final Integer id,
             Authentication authentication) throws TodoListNotFoundException {
@@ -89,6 +206,24 @@ public class TodoListController {
     }
 
     @PostMapping(path = "/{id}/items")
+    @Operation(summary = "Create a new Item for a To-Do List")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created the new Item successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid Item payload supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500",
+                    description = "Reached the maximum of Items a To-Do List can have",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<ItemDto> addTodoListItem(
             @PathVariable("id") final Integer id,
             @Validated @RequestBody final ItemInfoDto itemInfoDto,
@@ -100,6 +235,27 @@ public class TodoListController {
     }
 
     @PutMapping(path = "/{todoListId}/items/{itemId}")
+    @Operation(summary = "Update an existing To-Do List Item")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Updated the Item successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid Item payload supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "404", description = "To-Do List Item not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<ItemDto> updateTodoListItem(
             @PathVariable("todoListId") Integer todoListId,
             @PathVariable("itemId") Integer itemId,
@@ -112,6 +268,27 @@ public class TodoListController {
     }
 
     @DeleteMapping(path = "/{todoListId}/items/{itemId}")
+    @Operation(summary = "Delete an existing Item from a To-Do List")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Deleted the existing Item successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid id supplied",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "403", description = "Forbidden type of User",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "404", description = "To-Do List Item not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseBody.class)) }) })
     public ResponseEntity<Boolean> deleteTodoListItem(
             @PathVariable("todoListId") Integer todoListId,
             @PathVariable("itemId") Integer itemId,
