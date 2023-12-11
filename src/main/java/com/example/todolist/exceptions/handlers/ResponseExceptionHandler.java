@@ -1,10 +1,13 @@
 package com.example.todolist.exceptions.handlers;
 
+import com.example.todolist.exceptions.types.DuplicateValueException;
 import com.example.todolist.exceptions.types.LimitException;
 import com.example.todolist.utils.response.ErrorResponseBody;
 import com.example.todolist.exceptions.types.NotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +21,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
+    @ExceptionHandler(value = {
+            IllegalArgumentException.class,
+            IllegalStateException.class,
+            ConstraintViolationException.class,
+            DataIntegrityViolationException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<Object> handleBadRequest(
             RuntimeException ex, ServletWebRequest request) {
 
-        log.error("Illegal Argument Exception: {}", ex.getMessage());
+        log.error("{}: {}", ex.getClass().getSimpleName(), ex.getMessage());
 
         ErrorResponseBody body = ErrorResponseBody
                 .builder()
@@ -64,12 +71,12 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
-    @ExceptionHandler(value = { LimitException.class })
+    @ExceptionHandler(value = { LimitException.class, DuplicateValueException.class })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected ResponseEntity<Object> handleLimitError(
             RuntimeException ex, ServletWebRequest request) {
 
-        log.error("Limit Exception: {}", ex.getMessage());
+        log.error("{}: {}", ex.getClass().getSimpleName(), ex.getMessage());
 
         ErrorResponseBody body = ErrorResponseBody
                 .builder()
