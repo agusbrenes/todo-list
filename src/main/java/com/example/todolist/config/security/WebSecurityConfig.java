@@ -98,11 +98,11 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(ACTUATOR_URL, AUTH_URL, DOCS_URL, DOCS_YAML_URL, SWAGGER_URL)
+                        .requestMatchers(AUTH_URL, DOCS_URL, DOCS_YAML_URL, SWAGGER_URL)
                         .permitAll()
                         .requestMatchers(TODO_LISTS_URL)
                         .hasAuthority(UserRole.USER.name())
-                        .requestMatchers(REPORTING_URL, ROLES_URL)
+                        .requestMatchers(ACTUATOR_URL, REPORTING_URL, ROLES_URL)
                         .hasAuthority(UserRole.MAINTAINER.name())
                 )
                 .authenticationProvider(authenticationProvider())

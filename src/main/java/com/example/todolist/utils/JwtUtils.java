@@ -40,7 +40,7 @@ public class JwtUtils {
         String jwt = generateTokenFromUsername(email);
         return ResponseCookie
                 .from(jwtCookieName, jwt)
-                .path("/api")
+                .path("/")
                 .maxAge(jwtExpirationMs / 1000)
                 .httpOnly(true)
                 .build();
