@@ -3,12 +3,18 @@ package com.example.todolist.items.entity;
 import com.example.todolist.enums.Status;
 import com.example.todolist.todolists.entity.TodoList;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
 
     @Id

@@ -3,7 +3,10 @@ package com.example.todolist.todolists.entity;
 import com.example.todolist.items.entity.Item;
 import com.example.todolist.users.entity.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,6 +14,9 @@ import java.util.Set;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TodoList {
 
     @Id
