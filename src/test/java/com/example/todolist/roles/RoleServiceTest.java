@@ -11,18 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 class RoleServiceTest {
 
@@ -163,7 +160,6 @@ class RoleServiceTest {
     void testDeleteRoleById() {
         log.info("TEST - Delete Role by ID: 1");
         Role role = RoleFactory.generateRole(1, "USER");
-        RoleDto roleDto = RoleFactory.generateRoleDto(1, "USER");
 
         Mockito.doReturn(Optional.of(role))
                 .when(roleRepository)
