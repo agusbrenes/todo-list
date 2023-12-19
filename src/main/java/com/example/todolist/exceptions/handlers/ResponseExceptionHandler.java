@@ -22,12 +22,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {
-            IllegalArgumentException.class,
-            IllegalStateException.class,
             ConstraintViolationException.class,
             DataIntegrityViolationException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<Object> handleBadRequest(
+    protected ResponseEntity<Object> handleDataError(
             RuntimeException ex, ServletWebRequest request) {
 
         log.error("{}: {}", ex.getClass().getSimpleName(), ex.getMessage());
@@ -36,7 +34,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
                 .builder()
                 .status(HttpServletResponse.SC_BAD_REQUEST)
                 .error(HttpStatus.BAD_REQUEST)
-                .message(ex.getMessage())
+                .message("Invalid Data")
                 .path(request.getRequest().getRequestURI())
                 .build();
 
@@ -71,18 +69,41 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
-    @ExceptionHandler(value = { LimitException.class, DuplicateValueException.class })
+    @ExceptionHandler(value = { DuplicateValueException.class })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected ResponseEntity<Object> handleLimitError(
+    protected ResponseEntity<Object> handleDuplicateValueError(
             RuntimeException ex, ServletWebRequest request) {
 
-        log.error("{}: {}", ex.getClass().getSimpleName(), ex.getMessage());
+        log.error("Duplicate Value Exception: {}", ex.getMessage());
 
         ErrorResponseBody body = ErrorResponseBody
                 .builder()
                 .status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
                 .error(HttpStatus.INTERNAL_SERVER_ERROR)
-                .message(String.format("Something went wrong: %s", ex.getMessage()))
+                .message(ex.getMessage())
+                .path(request.getRequest().getRequestURI())
+                .build();
+
+        return handleExceptionInternal(
+                ex,
+                body,
+                new HttpHeaders(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                request);
+    }
+
+    @ExceptionHandler(value = { LimitException.class })
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<Object> handleLimitError(
+            RuntimeException ex, ServletWebRequest request) {
+
+        log.error("Limit Exception: {}", ex.getMessage());
+
+        ErrorResponseBody body = ErrorResponseBody
+                .builder()
+                .status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
+                .error(HttpStatus.INTERNAL_SERVER_ERROR)
+                .message(ex.getMessage())
                 .path(request.getRequest().getRequestURI())
                 .build();
 
