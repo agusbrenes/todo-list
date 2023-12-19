@@ -1,4 +1,4 @@
-package com.example.todolist.utils;
+package com.example.todolist.utils.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

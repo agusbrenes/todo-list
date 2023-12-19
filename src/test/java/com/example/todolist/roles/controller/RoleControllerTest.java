@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.example.todolist.utils.ObjectToJsonMapper.toJson;
+import static com.example.todolist.utils.mapper.ObjectToJsonMapper.toJson;
 
 @Slf4j
 @SpringBootTest
