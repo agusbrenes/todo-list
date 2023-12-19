@@ -44,7 +44,8 @@ class RoleControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/roles/{id}", 1))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(convertObjToJsonString(roleDto)));
     }
 
     @Test
@@ -77,7 +78,8 @@ class RoleControllerTest {
                         .post("/api/roles")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(convertObjToJsonString(roleInfoDto)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().json(convertObjToJsonString(roleDto)));
     }
 
     @Test
@@ -96,7 +98,8 @@ class RoleControllerTest {
                         .put("/api/roles/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(convertObjToJsonString(roleInfoDto)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(convertObjToJsonString(roleDto)));
     }
 
     @Test
