@@ -1,11 +1,10 @@
-package com.example.todolist.roles;
+package com.example.todolist.roles.service;
 
 import com.example.todolist.roles.dto.RoleDto;
 import com.example.todolist.roles.dto.RoleInfoDto;
 import com.example.todolist.roles.entity.Role;
 import com.example.todolist.roles.mapper.RoleMapper;
 import com.example.todolist.roles.repository.RoleRepository;
-import com.example.todolist.roles.service.RoleServiceImpl;
 import com.example.todolist.utils.factories.RoleFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;

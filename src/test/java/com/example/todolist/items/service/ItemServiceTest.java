@@ -1,11 +1,10 @@
-package com.example.todolist.items;
+package com.example.todolist.items.service;
 
 import com.example.todolist.items.dto.ItemDto;
 import com.example.todolist.items.dto.ItemInfoDto;
 import com.example.todolist.items.entity.Item;
 import com.example.todolist.items.mapper.ItemMapper;
 import com.example.todolist.items.repository.ItemRepository;
-import com.example.todolist.items.service.ItemServiceImpl;
 import com.example.todolist.utils.factories.ItemFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;

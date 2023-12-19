@@ -1,4 +1,4 @@
-package com.example.todolist.todolists;
+package com.example.todolist.todolists.controller;
 
 import com.example.todolist.auth.service.AuthService;
 import com.example.todolist.exceptions.types.TodoListNotFoundException;

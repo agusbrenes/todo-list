@@ -1,4 +1,4 @@
-package com.example.todolist.roles;
+package com.example.todolist.roles.controller;
 
 import com.example.todolist.exceptions.types.RoleNotFoundException;
 import com.example.todolist.roles.dto.RoleDto;
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.example.todolist.utils.TestUtils.convertObjToJsonString;
+import static com.example.todolist.utils.ObjectToJsonMapper.toJson;
 
 @Slf4j
 @SpringBootTest
@@ -45,7 +45,7 @@ class RoleControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/roles/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(convertObjToJsonString(roleDto)));
+                .andExpect(MockMvcResultMatchers.content().json(toJson(roleDto)));
     }
 
     @Test
@@ -77,9 +77,9 @@ class RoleControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/roles")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(convertObjToJsonString(roleInfoDto)))
+                        .content(toJson(roleInfoDto)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().json(convertObjToJsonString(roleDto)));
+                .andExpect(MockMvcResultMatchers.content().json(toJson(roleDto)));
     }
 
     @Test
@@ -97,9 +97,9 @@ class RoleControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/roles/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(convertObjToJsonString(roleInfoDto)))
+                        .content(toJson(roleInfoDto)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(convertObjToJsonString(roleDto)));
+                .andExpect(MockMvcResultMatchers.content().json(toJson(roleDto)));
     }
 
     @Test
@@ -116,7 +116,7 @@ class RoleControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/roles/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(convertObjToJsonString(roleInfoDto)))
+                        .content(toJson(roleInfoDto)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 

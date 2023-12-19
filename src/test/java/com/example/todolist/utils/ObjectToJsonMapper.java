@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TestUtils {
+public class ObjectToJsonMapper {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -12,7 +12,7 @@ public class TestUtils {
      * @param obj object to be converted into a JSON String
      * @return the object converted in String Format
      */
-    public static String convertObjToJsonString(final Object obj) {
+    public static String toJson(final Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
