@@ -1,7 +1,9 @@
 package com.example.todolist.utils.factories;
 
 import com.example.todolist.roles.dto.RoleDto;
+import com.example.todolist.roles.entity.Role;
 import com.example.todolist.users.dto.UserDto;
+import com.example.todolist.users.entity.User;
 
 public final class UserFactory {
 
@@ -15,13 +17,13 @@ public final class UserFactory {
                 .build();
     }
 
-    public static UserDto generateMaintainerUserDto(Integer id, String email) {
-        RoleDto roleDto = RoleFactory.generateRoleDto(1, "MAINTAINER");
-        return UserDto
+    public static User generateUser(Integer id, String email) {
+        Role role = RoleFactory.generateRole(1, "USER");
+        return User
                 .builder()
-                .id(id)
+                .id(id.longValue())
                 .email(email)
-                .role(roleDto)
+                .role(role)
                 .build();
     }
 

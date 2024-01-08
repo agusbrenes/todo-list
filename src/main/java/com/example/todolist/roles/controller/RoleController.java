@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +22,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "api/roles", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RoleController {
+
+    private static final String ALL_ROLES_REL = "roles";
 
     private final RoleService roleService;
 
@@ -43,12 +50,19 @@ public class RoleController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseBody.class)) }) })
-    public ResponseEntity<List<RoleDto>> getAllRoles() {
-        return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
+    public ResponseEntity<CollectionModel<EntityModel<RoleDto>>> getAllRoles() {
+        List<EntityModel<RoleDto>> roles = roleService.getAllRoles().stream()
+                .map(role -> EntityModel.of(role,
+                        linkTo(methodOn(RoleController.class).getRoleById(role.getId())).withSelfRel(),
+                        linkTo(methodOn(RoleController.class).getAllRoles()).withRel(ALL_ROLES_REL)))
+                .toList();
+        return new ResponseEntity<>(
+                CollectionModel.of(roles, linkTo(methodOn(RoleController.class).getAllRoles()).withSelfRel()),
+                HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}")
-    @Operation(summary = "Get all Roles")
+    @Operation(summary = "Get a Role by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the specified Role by its id",
                     content = { @Content(mediaType = "application/json",
@@ -65,9 +79,13 @@ public class RoleController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseBody.class)) }) })
-    public ResponseEntity<RoleDto> getRoleById(@PathVariable("id") Integer id)
+    public ResponseEntity<EntityModel<RoleDto>> getRoleById(@PathVariable("id") Integer id)
             throws RoleNotFoundException {
-        return new ResponseEntity<>(roleService.getRole(id), HttpStatus.OK);
+        return new ResponseEntity<>(
+                EntityModel.of(roleService.getRole(id),
+                        linkTo(methodOn(RoleController.class).getRoleById(id)).withSelfRel(),
+                        linkTo(methodOn(RoleController.class).getAllRoles()).withRel(ALL_ROLES_REL)),
+                HttpStatus.OK);
     }
 
     @PostMapping
@@ -88,8 +106,12 @@ public class RoleController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseBody.class)) }) })
-    public ResponseEntity<RoleDto> createRole(@Validated @RequestBody RoleInfoDto roleInfoDto) {
-        return new ResponseEntity<>(roleService.createRole(roleInfoDto), HttpStatus.CREATED);
+    public ResponseEntity<EntityModel<RoleDto>> createRole(@Validated @RequestBody RoleInfoDto roleInfoDto) {
+        return new ResponseEntity<>(
+                EntityModel.of(roleService.createRole(roleInfoDto),
+                        linkTo(methodOn(RoleController.class).createRole(roleInfoDto)).withSelfRel(),
+                        linkTo(methodOn(RoleController.class).getAllRoles()).withRel(ALL_ROLES_REL)),
+                HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}")
@@ -114,14 +136,18 @@ public class RoleController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseBody.class)) }) })
-    public ResponseEntity<RoleDto> updateRole(
+    public ResponseEntity<EntityModel<RoleDto>> updateRole(
             @PathVariable("id") Integer id,
             @Validated @RequestBody RoleInfoDto roleInfoDto) throws RoleNotFoundException {
-        return new ResponseEntity<>(roleService.updateRole(id, roleInfoDto), HttpStatus.OK);
+        return new ResponseEntity<>(
+                EntityModel.of(roleService.updateRole(id, roleInfoDto),
+                        linkTo(methodOn(RoleController.class).updateRole(id, roleInfoDto)).withSelfRel(),
+                        linkTo(methodOn(RoleController.class).getAllRoles()).withRel(ALL_ROLES_REL)),
+                HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    @Operation(summary = "Delete an existing To-Do List")
+    @Operation(summary = "Delete an existing Role")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Deleted the existing Role successfully",
@@ -142,10 +168,14 @@ public class RoleController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseBody.class)) }) })
-    public ResponseEntity<Boolean> deleteRole(@PathVariable("id") Integer id)
+    public ResponseEntity<EntityModel<Boolean>> deleteRole(@PathVariable("id") Integer id)
             throws RoleNotFoundException {
         roleService.deleteRole(id);
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(
+                EntityModel.of(true,
+                        linkTo(methodOn(RoleController.class).deleteRole(id)).withSelfRel(),
+                        linkTo(methodOn(RoleController.class).getAllRoles()).withRel(ALL_ROLES_REL)),
+                HttpStatus.OK);
     }
 
 }

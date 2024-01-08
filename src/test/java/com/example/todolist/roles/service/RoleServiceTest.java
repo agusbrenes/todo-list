@@ -35,6 +35,7 @@ class RoleServiceTest {
     @DisplayName("Find Role By ID: 1")
     void testFindRoleById() {
         log.info("TEST - Find Role by ID: 1");
+
         Role role = RoleFactory.generateRole(1, "USER");
         RoleDto roleDto = RoleFactory.generateRoleDto(1, "USER");
 
@@ -60,6 +61,7 @@ class RoleServiceTest {
     @DisplayName("Create New Role")
     void testCreateRole() {
         log.info("TEST - Create New Role");
+
         Role role = RoleFactory.generateRole(1, "USER");
         RoleDto roleDto = RoleFactory.generateRoleDto(1, "USER");
         RoleInfoDto roleInfoDto = RoleFactory.generateRoleInfoDto("USER");
@@ -96,6 +98,7 @@ class RoleServiceTest {
     @DisplayName("Update Role with ID: 1")
     void testUpdateRole() {
         log.info("TEST - Update Role with ID: 1");
+
         Role role = RoleFactory.generateRole(1, "USER");
         Role updatedRole = RoleFactory.generateRole(1, "MAINTAINER");
         RoleDto roleDto = RoleFactory.generateRoleDto(1, "MAINTAINER");
@@ -133,6 +136,7 @@ class RoleServiceTest {
     @DisplayName("Find All Roles")
     void testFindAllRoles() {
         log.info("TEST - Find All Roles");
+
         Role role = RoleFactory.generateRole(1, "USER");
         RoleDto roleDto = RoleFactory.generateRoleDto(1, "USER");
 
@@ -158,6 +162,7 @@ class RoleServiceTest {
     @DisplayName("Delete Role By ID: 1")
     void testDeleteRoleById() {
         log.info("TEST - Delete Role by ID: 1");
+
         Role role = RoleFactory.generateRole(1, "USER");
 
         Mockito.doReturn(Optional.of(role))
